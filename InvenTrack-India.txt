@@ -1,0 +1,133 @@
+class Product:
+    def __init__(self, product_id, name, price, quantity):
+        self.product_id = product_id
+        self.name = name
+        self.price = price  # Price in INR
+        self.quantity = quantity
+
+    def update_stock(self, quantity):
+        self.quantity += quantity
+        print(f"Stock updated. New quantity of {self.name}: {self.quantity}")
+
+    def sell(self, quantity):
+        if self.quantity >= quantity:
+            self.quantity -= quantity
+            total_sale = quantity * self.price
+            print(f"Sold {quantity} of {self.name}. Total sale: ₹{total_sale:.2f}")
+            return total_sale
+        else:
+            print(f"Insufficient stock for {self.name}.")
+            return 0
+
+    def display_product(self):
+        print(f"ID: {self.product_id}, Name: {self.name}, Price: ₹{self.price:.2f}, Quantity: {self.quantity}")
+
+
+class Inventory:
+    def __init__(self):
+        self.products = {}
+
+    def add_product(self, product):
+        if product.product_id in self.products:
+            print("Product ID already exists. Use update_stock to add more quantity.")
+        else:
+            self.products[product.product_id] = product
+            print(f"Product {product.name} added successfully.")
+
+    def remove_product(self, product_id):
+        if product_id in self.products:
+            del self.products[product_id]
+            print("Product removed successfully.")
+        else:
+            print("Product ID not found.")
+
+    def update_stock(self, product_id, quantity):
+        if product_id in self.products:
+            self.products[product_id].update_stock(quantity)
+        else:
+            print("Product ID not found.")
+
+    def sell_product(self, product_id, quantity):
+        if product_id in self.products:
+            return self.products[product_id].sell(quantity)
+        else:
+            print("Product ID not found.")
+            return 0
+
+    def check_low_stock(self, threshold=5):
+        print("\nProducts with low stock:")
+        for product in self.products.values():
+            if product.quantity <= threshold:
+                product.display_product()
+
+    def sales_analytics(self):
+        total_sales = 0
+        print("\nSales Analytics:")
+        for product in self.products.values():
+            total_sales += (product.price * (product.quantity))
+        print(f"Total sales revenue: ₹{total_sales:.2f}")
+
+    def display_inventory(self):
+        print("\nCurrent Inventory:")
+        for product in self.products.values():
+            product.display_product()
+
+
+def main():
+    inventory = Inventory()
+
+    while True:
+        print("\nSmart Inventory Management System")
+        print("1. Add Product")
+        print("2. Remove Product")
+        print("3. Update Stock")
+        print("4. Sell Product")
+        print("5. Check Low Stock")
+        print("6. Sales Analytics")
+        print("7. Display Inventory")
+        print("8. Exit")
+
+        choice = int(input("Enter your choice: "))
+
+        if choice == 1:
+            product_id = input("Enter product ID: ")
+            name = input("Enter product name: ")
+            price = float(input("Enter product price (in INR): "))
+            quantity = int(input("Enter product quantity: "))
+            product = Product(product_id, name, price, quantity)
+            inventory.add_product(product)
+
+        elif choice == 2:
+            product_id = input("Enter product ID to remove: ")
+            inventory.remove_product(product_id)
+
+        elif choice == 3:
+            product_id = input("Enter product ID to update stock: ")
+            quantity = int(input("Enter quantity to add: "))
+            inventory.update_stock(product_id, quantity)
+
+        elif choice == 4:
+            product_id = input("Enter product ID to sell: ")
+            quantity = int(input("Enter quantity to sell: "))
+            inventory.sell_product(product_id, quantity)
+
+        elif choice == 5:
+            threshold = int(input("Enter low stock threshold: "))
+            inventory.check_low_stock(threshold)
+
+        elif choice == 6:
+            inventory.sales_analytics()
+
+        elif choice == 7:
+            inventory.display_inventory()
+
+        elif choice == 8:
+            print("Exiting...")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
